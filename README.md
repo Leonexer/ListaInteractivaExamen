@@ -6,7 +6,7 @@
         Mostrar lista: Despliega todos los elementos almacenados en la lista.
         Salir: Termina la ejecución del programa.
     La lista puede implementarse utilizando List<T> o una estructura de datos personalizada.
-##Procedimiento
+## Procedimiento
     Implementé mediante nodos una lista doblemente enlazada, la cual tiene funciones para: Agregar un elemento después de cualquier posición de la lista, borrar cualquier elemento de la lista y una función para imprimir la lista
     El programa al ejecutarlo muestra un menú que describe los cambios hechos al hacerlos, y deja acceder a las funciones ya mencionadas.
     
