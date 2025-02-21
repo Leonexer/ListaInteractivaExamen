@@ -16,7 +16,7 @@ namespace ListaInteractiva
             List lista = new List();
             string opcion;
 
-            do
+            do //Menu, se repite a menos que se elija la opcion 4
             {
                 Console.WriteLine("\n  ----- Menú -----");
                 Console.WriteLine(" 1 Agregar elemento");
@@ -33,7 +33,7 @@ namespace ListaInteractiva
                     case "1":
                         Console.Write("Ingresa el nombre del cliente: ");
                         string nombre = Console.ReadLine();
-                        if (lista.ListIsEmpty())
+                        if (lista.ListIsEmpty()) //Si la lista esta vacía se agrega sin mostrar el indice
                         {
                             lista.AddToList(nombre, 0);
                             break;
@@ -47,6 +47,7 @@ namespace ListaInteractiva
                     case "2":
                         lista.ShowList();
                         Console.Write("¿Cuál es la posición del elemento que desea borrar?: ");
+                        //Se lee la posicion, se ejecuta la función y escribe el valor borrado que retorne la funcion DeletefromList
                         Console.WriteLine("Se ha eliminado el elemento: " + lista.DeleteFromList(Convert.ToInt16(Console.ReadLine()))+ " de la lista");
                         
                         break;

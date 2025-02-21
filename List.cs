@@ -9,73 +9,93 @@ namespace ListaInteractiva
 {
     internal class List
     {
-        private Nodo Head;
-        private Nodo Tail;
-        private int Counter; //Para el ciclo, acuerdate
+        private Nodo Head; //El valor primero de la lista
+        private Nodo Tail; //El valor último de la lista
+        private int Counter = 0; //El tamaño de la lista
 
-        public bool ListIsEmpty()
+        public bool ListIsEmpty() //Devuelve true si la lista está vacía
         {
-            return Head == null && Tail == null;
+            return Head == null;
         }
-        public void Prepend(Object Dato)
+
+        public void Prepend(object Dato) //Añadir al inicio
         {
+            Nodo newNode = new Nodo(Dato); //Un nodo que almacena el dato
             if (ListIsEmpty())
             {
-                Head = Tail = new Nodo(Dato);
-                Counter++;
+                Head = Tail = newNode;
             }
             else
             {
-                Head = Head.prev = new Nodo(Dato, Tail, Head);
-                Counter++;
+                newNode.next = Head; //Se establecen las referencias del nodo temporal
+                Head.prev = newNode; 
+                Head = newNode; //Se actualiza la Head
             }
-        }
-
-        public void AddToList(Object Dato, int Posicion)
-        {
-            if (Posicion == 0)
-            {
-                Append(Dato);
-                Counter++;
-                return;
-            }
-
-            if (Posicion == Counter)
-            {
-                Prepend(Dato);
-                Counter++;
-                return;
-            }
-
-            Nodo Current = Head;
-            for (int i = 1; i < Posicion; i++)
-            {
-                Current = Current.next;
-            }
-            Current.next = new Nodo(Dato, Current, Current.next);
             Counter++;
         }
 
-        public object DeleteFromList(int Posicion)
+        public void Append(object Dato) //Añadir al final
         {
-            if (ListIsEmpty() || Posicion == 0)
+            Nodo newNode = new Nodo(Dato); //Un nodo temporal que almacena el dato
+            if (ListIsEmpty())
+            {
+                Head = Tail = newNode;
+            }
+            else
+            {
+                newNode.prev = Tail; //Se establecen las referencias del nodo temporal
+                Tail.next = newNode;
+                Tail = newNode; //Se actualiza la Tail
+            }
+            Counter++;
+        }
+
+        public void AddToList(object Dato, int Posicion) //Añadir después de una posición
+        {
+            if (Posicion < 0 || Posicion > Counter) return;
+            if (Posicion == 0) //Si la posición es 0 se añade al principio
+            {
+                Prepend(Dato);
+                return;
+            }
+            if (Posicion == Counter) //Si la posición es igual al tamaño de la lista se añade el elemnto al final.
+            {
+                Append(Dato);
+                return;
+            }
+
+            Nodo Current = Head; //El nodo que se recorrerá al indice dado por el usuario
+            for (int i = 0; i < Posicion; i++)
+            {
+                Current = Current.next;
+            }
+
+            Nodo newNode = new Nodo(Dato, Current.prev, Current); //Se crea un nuevo nodo con el dato a almacenar
+            Current.prev.next = newNode; //Se actualizan las referencias del nodo anterior
+            Current.prev = newNode; //Se actualizan las referencias del nodo actual para apuntar al nuevo nodo
+            Counter++;
+        }
+
+        public object DeleteFromList(int Posicion) //Borrar dependiendo del indice
+        {
+            if (ListIsEmpty() || Posicion < 0 || Posicion > Counter) //Valores inválidos
             {
                 return null;
             }
 
-            Object DeletedDato;
+            object DeletedDato;
 
             if (Posicion == 1)
             {
-                DeletedDato = Head.dato;
-                if (Head == Tail)
+                DeletedDato = Head.dato; //Se almacena el dato borrado
+                if (Head == Tail) //En caso de que la lista tenga solo un elemento
                 {
                     Head = Tail = null;
                 }
                 else
                 {
-                    Head = Head.next;
-                    Head.prev = Tail;
+                    Head = Head.next; //Se actualizan las referencias del siguiente nodo
+                    Head.prev = null;
                 }
                 Counter--;
                 return DeletedDato;
@@ -83,107 +103,44 @@ namespace ListaInteractiva
 
             if (Posicion == Counter)
             {
-                DeletedDato = Tail.dato;
-                if (Head == Tail)
+                DeletedDato = Tail.dato; //Se almacena el dato borrado para retornarlo
+                if (Head == Tail) //En caso de que la lista tenga un solo dato
                 {
                     Head = Tail = null;
                 }
                 else
                 {
-                    Tail = Tail.prev;
-                    Tail.next = Head;
+                    Tail = Tail.prev;   //Se actualizan las referencias del nodo anterior
+                    Tail.next = null;
                 }
                 Counter--;
                 return DeletedDato;
             }
 
             Nodo Current = Head;
-            for (int i = 1; i < Posicion; i++)
+            for (int i = 1; i < Posicion; i++) //Recorrer la lista al dato a ser borrado
             {
                 Current = Current.next;
             }
-            DeletedDato = Current.dato;
-            Current.prev.next = Current.next;
-            Current.next.prev = Current.prev;
-            Counter--;
+            DeletedDato = Current.dato; //Se guarda el dato borrado para retornarlo
+            Current.next.prev = Current.prev; //Se actualizan las referencias del nodo siguiente
+            Current.prev.next = Current.next; //Se actualizan las referencias del nodo anterior
+            Counter--;          //Disminuyo el contador de elemtos por 1
             return DeletedDato;
         }
 
-        public void Append(Object Dato)
+        public void ShowList() //Mostrar la lista
         {
-            if (ListIsEmpty())
-            {
-                Tail = Head = new Nodo(Dato);
-                Counter++;
-            }
-            else
-            {
-                Tail = Tail.next = new Nodo(Dato, Tail, Head);
-                Counter++;
-            }
-        }
-
-        public void ShowList()
-        {
-            Nodo Actual = Head;
+            Console.WriteLine("  ------ Lista -----");
             int i = 1;
-            while (Actual != null) {
-                Console.WriteLine((i++) + ".- "+Actual.dato);
+            Nodo Actual = Head;
+            while (Actual != null)
+            {
+                Console.WriteLine(i + ".- " + Actual.dato);
                 Actual = Actual.next;
+                i++;
             }
             Console.WriteLine("  ----------------");
-        }
-        public void ShowListBackwards()
-        {
-            Nodo Actual = Tail;
-            for (int i = 0; i < Counter; i++)
-            {
-                Console.WriteLine(Actual.dato);
-                Actual = Actual.prev;
-            }
-        }
-
-        public object DeleteHead()
-        {
-            if (ListIsEmpty())
-            {
-                throw new EmptyListException();
-            }
-
-            object DeletedObj = Head.dato;
-
-            if (Head == Tail)
-            {
-                Head = Tail = null;
-            }
-            else
-            {
-                Head = Head.next;
-                Head.prev = null;
-            }
-
-            Counter--;
-            return DeletedObj;
-        }
-
-        public object DeleteTail()
-        {
-            if (ListIsEmpty())
-            {
-                throw new EmptyListException();
-            }
-            object DeletedObj = Tail.dato;
-            if (Head == Tail)
-            {
-                Head = Tail = null;
-            }
-            else
-            {
-                Tail = Tail.prev;
-                Tail.prev = null;
-            }
-            Counter--;
-            return DeletedObj;
         }
     }
 }
